@@ -19,3 +19,8 @@ app.use(express.json())
 app.use('/api/v1/bootcamps', bootcamps)
 
 app.listen(PORT, console.log(`ENV: ${process.env.NODE_ENV} PORT: ${process.env.PORT}`))
+
+process.on('unhandledRejection', (err, promise) => {
+  console.log('Error: ', err)
+  ServiceWorkerRegistration.close(() => process.exit(1))
+})
