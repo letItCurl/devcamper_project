@@ -1,4 +1,5 @@
 const Bootcamp = require('../models/Bootcamp')
+const ErrorResponse = require('../utils/errorResponse')
 
 exports.getBootcamps = async (req, res, next) => {
   try {
@@ -17,7 +18,7 @@ exports.getBootcamp = async (req, res, next) => {
     if (!bootcamp) res.status(400).json({ success: false, error: 'Not found' })
     res.status(200).json({ success: true, data: bootcamp })
   } catch (error) {
-    res.status(400).json({ success: false, error })
+    next(new ErrorResponse(`Bootcamp ${req.params.id} not found`, 400))
   }
 }
 
@@ -38,7 +39,7 @@ exports.putBootcamp = async (req, res, next) => {
       runValidators: true
     })
 
-    if (!bootcamp) res.status(400).json({ success: false, error: 'Not found' })
+    if (!bootcamp) next(new ErrorResponse(`Bootcamp ${req.params.id} not found`, 400))
     res.status(201).json({ success: true, data: bootcamp })
   } catch (error) {
     res.status(400).json({ success: false, error })
@@ -49,7 +50,7 @@ exports.deleteBootcamp = async (req, res, next) => {
   try {
     const bootcamp = await Bootcamp.findByIdAndRemove(req.params.id)
 
-    if (!bootcamp) res.status(400).json({ success: false, error: 'Not found' })
+    if (!bootcamp) next(new ErrorResponse(`Bootcamp ${req.params.id} not found`, 400))
     res.status(201).json({ success: true, data: bootcamp })
   } catch (error) {
     res.status(400).json({ success: false, error })
